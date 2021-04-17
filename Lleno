@@ -1,0 +1,19 @@
+bool lleno(char** matrix, int matrix_size)
+{
+    //Variable que determina cuantos espacios en el tablero estan ocupados
+    int count = 0;
+
+    //Doble for para recorrer todos los elementos de la matriz
+    for (int i = 0; i < matrix_size; i++)
+    {
+        for (int j = 0; j < matrix_size; j++)
+        {
+            //Si el elemento es igual a 'X' o 'O' se incrementa count
+            if (matrix[i][j] == 'X' || matrix[i][j] == 'O')
+            count++;
+        }
+    }
+    //Si el numero de espacios ocupados (count) es igual a matrix_size*matrix_size, res es igual a true
+    bool res = (count == matrix_size*matrix_size);
+    return res;
+}
