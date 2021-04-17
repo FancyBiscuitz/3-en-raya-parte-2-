@@ -1,6 +1,6 @@
 char Verificar_tablero(char** matrix, int matrix_size)
 {
-    //Valor a dovolver
+    //Valor a devolver
     char res = '0';
     //Variables para revisar las lineas horizontales y verticales
     char option;
