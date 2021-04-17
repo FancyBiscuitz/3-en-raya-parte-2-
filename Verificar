@@ -1,0 +1,32 @@
+bool Verificar(char** matrix, int index, int matrix_size, char tag)
+{
+    //Definir el elemento de la matriz segun la posicion dada
+    int index_i = int(ceil(float(index)/matrix_size)) - 1;
+    int index_j = index - (index_i*matrix_size + 1);
+
+    //Si la posicion no esta en el rango de la matriz devuelve false
+    if (index < 1 || index > matrix_size*matrix_size)
+    {
+        //Si tag = p esntonces se imprime un mensaje especificando la razon de la invalidez de la posicion
+        if (tag == 'p')
+        {
+            std::cout << "Posicion fuera de rango.";
+        }
+        return false;
+    }
+    //Si la posicion solicitada ya esta ocupada
+    else if (matrix[index_i][index_j] == 'X' || matrix[index_i][index_j] == 'O')
+    {
+        //Si tag = p esntonces se imprime un mensaje especificando la razon de la invalidez de la posicion
+        if (tag == 'p')
+        {
+            std::cout << "Esa posicion ya esta ocupada.";
+        }
+        return false;
+    }
+    //Si la posicion es valida
+    else
+    {
+        return true;
+    }
+}
