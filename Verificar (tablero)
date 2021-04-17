@@ -1,0 +1,130 @@
+char Verificar_tablero(char** matrix, int matrix_size)
+{
+    //Valor a dovolver
+    char res = '0';
+    //Variables para revisar las lineas horizontales y verticales
+    char option;
+    int count = 1;
+    //Variables para revisar las diagonales
+    char optionD;
+    int countD = 1;
+    //Variable para revisar diagonal
+    int change1 = 1;
+    //Variable dejar de revisar si no se encuentra la opcion correcta
+    bool sup_bool = false;
+    //Indices i y j de la matriz
+    int f;
+    int c;
+    //Punteros a las variables c y f
+    int* pc;
+    int* pf;
+
+    //Revisa la diagonal de la derecha
+    if (matrix[0][matrix_size-1] == 'X' || matrix[0][matrix_size-1] == 'O')
+    {
+        (matrix[0][matrix_size-1] == 'X') ? optionD = 'X' : optionD = 'O';
+        //Ejecutar mientras el siguiente elemento sea igual a optionD
+        while (matrix[0+change1][matrix_size-1-change1] == optionD)
+        {
+            //Aumentar el tamanho de la cadena encontrada
+            countD++;
+            //Aumentar change1 para revisar el siguiente elemento
+            change1++;
+
+            //Revisar si se encontro una cadena de 'X' o 'O' de tamanho matrix_size
+            if (countD == matrix_size)
+            {
+                return optionD;
+            }
+        }
+    }
+
+
+    countD = 1;
+    //Bucle for para revisar las lineas horizontales, verticales y la diagonal izquierda
+    for (int i = 0; i < matrix_size; i++)
+    {
+        //Revisa si el elemento i,i es 'X' o 'O'
+        if (matrix[i][i] != 'X' && matrix[i][i] != 'O')
+        {
+            continue;
+        }
+        //Asignarle el char correcto a la variable option
+        (matrix[i][i] == 'X') ? option = 'X' : option = 'O';
+        //Asignarle el char del primer elemento de la diagonal izquierda a optionD
+        if (i == 0)
+        {
+            optionD = option;
+        }
+        //Aumentar la variable countD si los siguientes elementos de la diagonal izquierda son iguales a optionD
+        if (option == optionD)
+        {
+            countD++;
+        }
+        //Revisar si se llego a tener una cadena de 'X' o 'O' de tamanho matrix_size
+        if (countD == matrix_size + 1)
+        {
+            return optionD;
+        }
+        
+        //Asignar a los punteros su respectiva direccion de los valores c y f
+        pf = &f;
+        pc = &c;
+        c = i;
+
+        //Primera iteracion: Revisa los elementos a la izquierda y derecha del elemento de la diagonal
+        //Segunda iteracion: Revisa los elementos de arriba y abajo del elemento de la diagonal
+        for (int g = 0; g < 2; g++)
+        {
+            f = i - 1;
+            //Revisar elementos a la izquierda y arriba del elemento de la diagonal
+            while (f >= 0)
+            {
+                //Revisar si el siguiente elemento es igual a la opcion encontrada en la diagonal
+                if (matrix[*pc][*pf] == option)
+                {
+                    //Aumentar el tamanho de la cadena encontrada
+                    count++;
+                    f--;
+                }
+                else
+                {
+                    //Si no se encuentra la opcion correcta
+                    sup_bool = true;
+                    break;
+                }
+            }
+
+            f = i + 1;
+            //Revisar elementos a la derecha y abajo del elemento de la diagonal
+            while (f <= matrix_size-1 && !sup_bool)
+            {
+                //Revisar si el siguiente elemento es igual a la opcion encontrada en la diagonal
+                if (matrix[*pc][*pf] == option)
+                {
+                    //Aumentar el tamanho de la cadena encontrada
+                    count++;
+                    f++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            //Revisar si se encontro una cadena de 'X' o 'O' de tamanho matrix_size
+            (count == matrix_size) ? res = option : res = '0';
+            if (res != '0')
+            {
+                return res;
+            }
+            //Resetear variables
+            count = 1;
+            sup_bool = false;
+            //Intercambiar las direcciones de los punteros
+            pf = &c;
+            pc = &f;
+        }
+    }
+    //Si no se encuentra ninguna cadena de tamanho matrix_size
+    return res;
+}
