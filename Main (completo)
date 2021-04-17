@@ -1,0 +1,414 @@
+#include <math.h>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
+
+char** Definir_e_inicializar_matriz(int size);
+void Imprimir_tablero(char** matriz, int size);
+char Escoger();
+char Verificar_tablero(char** matrix, int matrix_size);
+bool lleno(char** matrix, int matrix_size);
+int Escoger_pos();
+bool Verificar(char** matrix, int index, int matrix_size, char tag);
+void Colocar2(char** matriz, int matriz_size, int posicion, char opcion);
+int Maquina(int rango);
+
+int main(void)
+{
+    //Declarar doble puntero a matriz (m)
+    char** m;
+    //Opcion ('X' o 'O') y posicion del usuario
+    char option;
+    int position;
+    //Opcion ('X' o 'O') y posicion del computador
+    char option_bot;
+    int position_bot;
+    //Tamanho de la matriz (tablero)
+    int S;
+
+    //Determinar el tamanho del tablero
+    std::cout << "tamanho de tablero: " << std::endl << ">";
+    std::cin >> S;
+
+    //Crear la matriz de tamanho S
+    m = Definir_e_inicializar_matriz(S);
+    //Mostrar la matriz en formato tablero
+    Imprimir_tablero(m, S);
+    std::cout << std::endl;
+
+    //Determinar la opcion del usuario y del computador
+    option = Escoger();
+    (option == 'X') ? option_bot = 'O' : option_bot = 'X';
+
+    while (true)
+    {
+        //Revisar si hay un ganador
+        if (Verificar_tablero(m, S) != '0')
+        {
+            std::cout << std::endl;
+            std::cout << "juego terminado" << std::endl << "Ganador: " << Verificar_tablero(m, S);
+            break;
+        }
+        //Revisar si el tablero esta lleno
+        else if (lleno(m, S))
+        {
+            std::cout << std::endl;
+            std::cout << "nobody fucked xd" << std::endl;
+            break;
+        }
+        
+        //Turno del usuario
+        std::cout << "TURNO DEL USUARIO" << std::endl;
+        //Repetir hasta que la posicion dada por el usuario sea valida
+        do
+        {
+            position = Escoger_pos();
+        }
+        while (!Verificar(m, position, S, 'p'));
+        //Colocar la opcion del usuario en la posicion especificada
+        Colocar2(m, S, position, option);
+        //Mostrar el tablero modificado
+        Imprimir_tablero(m, S);
+        std::cout << std::endl;
+
+        //Revisar si hay un ganador
+        if (Verificar_tablero(m, S) != '0')
+        {
+            std::cout << std::endl;
+            std::cout << "juego terminado" << std::endl << "Ganador: " << Verificar_tablero(m, S);
+            break;
+        }
+        //Revisar si el tablero esta lleno
+        else if (lleno(m, S))
+        {
+            std::cout << std::endl;
+            std::cout << "nobody fucked xd" << std::endl;
+            break;
+        }
+
+        //Turno del computador
+        std::cout << "TURNO DE EL COMPUTADOR" << std::endl;
+        //Repetir hasta que el numero aleatorio generado sea valido
+        do
+        {
+            position_bot = Maquina(S*S);
+        }
+        while (!Verificar(m, position_bot, S, 'c'));
+        //Colocar la opcion del computador en la posicion aleatoria
+        Colocar2(m, S, position_bot, option_bot);
+        //Mostrar el tablero modificado
+        Imprimir_tablero(m, S);
+        std::cout << std::endl;
+    }
+}
+
+char** Definir_e_inicializar_matriz(int size)
+{
+    int sup = 1;
+    //Doble puntero m apunta a una nueva lista de punteros de size n
+    char** m = new char*[size];
+    //Crear matriz y dar valor a los elementos
+    for (int i = 0; i < size; i++)
+    {
+        //Cada elemento de m apunta a una nueva lista de chars de size n para crear la matriz
+        m[i] = new char[size];
+        //Dar valor a cada elemento de la matriz
+        for (int j = 0; j < size; j++)
+        {
+            if (sup > 9)
+            {
+                m[i][j] = '-';
+            }
+            else
+            {
+                m[i][j] = sup + '0';
+            }
+            sup++;
+        }
+    }
+    return m;
+}
+
+void Imprimir_tablero(char** matriz, int size)
+{
+    //Variable papra imprimir las lineas horizontales del tablero
+    std::string sup;
+    //Definir longitud de las lineas horizontales
+    for (int c = 0; c < (3*size)+(size - 1); c++)
+    {
+        sup += "-";
+    }
+    //Imprimir valores y separaciones
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            //Imprimir valor 
+            std::cout << " " << matriz[i][j] << " ";
+            //Imprimir separacion a la derecha hasta en penultimo elemento
+            if (j == size - 1)
+            {
+                break;
+            }
+            else
+            {
+                std::cout << "|";
+            }
+        }
+        //Imprimir linea horizontal (sup) hasta el penultimo elemento
+        if (i == size -1)
+        {
+            break;
+        }
+        else 
+        {
+            std::cout << std::endl << sup << std::endl;
+        }
+    }
+}
+
+char Escoger()
+{
+    char res;
+    //Se repite hasta que el usuario ingrese una opcion valida
+    while(true)
+    {  
+        //Recibir input del usuario
+        std::cout << "Escoja X o O: " << std::endl << "1: X" << std::endl << "2: O" << std::endl << ">";
+        std::cin >> res;
+        //Revisar si el input del usuario es valido
+        if (res == '1' || res == '2')
+        {
+            std::cout << "se escogio: ";
+            //Devolver la opcion escogida  
+            if (res == '1')
+            {
+                std::cout << "X" << std::endl;
+                return 'X'; 
+            }
+            else
+            {
+                std::cout << "O" << std::endl;
+                return 'O';
+            }
+        }
+        //Caso de que el input no sea valido
+        else
+        {
+            std::cout << "Ingrese una opcion valida" << std::endl;
+        }
+    }  
+}
+
+char Verificar_tablero(char** matrix, int matrix_size)
+{
+    //Valor a dovolver
+    char res = '0';
+    //Variables para revisar las lineas horizontales y verticales
+    char option;
+    int count = 1;
+    //Variables para revisar las diagonales
+    char optionD;
+    int countD = 1;
+    //Variable para revisar diagonal
+    int change1 = 1;
+    //Variable dejar de revisar si no se encuentra la opcion correcta
+    bool sup_bool = false;
+    //Indices i y j de la matriz
+    int f;
+    int c;
+    //Punteros a las variables c y f
+    int* pc;
+    int* pf;
+
+    //Revisa la diagonal de la derecha
+    if (matrix[0][matrix_size-1] == 'X' || matrix[0][matrix_size-1] == 'O')
+    {
+        (matrix[0][matrix_size-1] == 'X') ? optionD = 'X' : optionD = 'O';
+        //Ejecutar mientras el siguiente elemento sea igual a optionD
+        while (matrix[0+change1][matrix_size-1-change1] == optionD)
+        {
+            //Aumentar el tamanho de la cadena encontrada
+            countD++;
+            //Aumentar change1 para revisar el siguiente elemento
+            change1++;
+
+            //Revisar si se encontro una cadena de 'X' o 'O' de tamanho matrix_size
+            if (countD == matrix_size)
+            {
+                return optionD;
+            }
+        }
+    }
+
+
+    countD = 1;
+    //Bucle for para revisar las lineas horizontales, verticales y la diagonal izquierda
+    for (int i = 0; i < matrix_size; i++)
+    {
+        //Revisa si el elemento i,i es 'X' o 'O'
+        if (matrix[i][i] != 'X' && matrix[i][i] != 'O')
+        {
+            continue;
+        }
+        //Asignarle el char correcto a la variable option
+        (matrix[i][i] == 'X') ? option = 'X' : option = 'O';
+        //Asignarle el char del primer elemento de la diagonal izquierda a optionD
+        if (i == 0)
+        {
+            optionD = option;
+        }
+        //Aumentar la variable countD si los siguientes elementos de la diagonal izquierda son iguales a optionD
+        if (option == optionD)
+        {
+            countD++;
+        }
+        //Revisar si se llego a tener una cadena de 'X' o 'O' de tamanho matrix_size
+        if (countD == matrix_size + 1)
+        {
+            return optionD;
+        }
+        
+        //Asignar a los punteros su respectiva direccion de los valores c y f
+        pf = &f;
+        pc = &c;
+        c = i;
+
+        //Primera iteracion: Revisa los elementos a la izquierda y derecha del elemento de la diagonal
+        //Segunda iteracion: Revisa los elementos de arriba y abajo del elemento de la diagonal
+        for (int g = 0; g < 2; g++)
+        {
+            f = i - 1;
+            //Revisar elementos a la izquierda y arriba del elemento de la diagonal
+            while (f >= 0)
+            {
+                //Revisar si el siguiente elemento es igual a la opcion encontrada en la diagonal
+                if (matrix[*pc][*pf] == option)
+                {
+                    //Aumentar el tamanho de la cadena encontrada
+                    count++;
+                    f--;
+                }
+                else
+                {
+                    //Si no se encuentra la opcion correcta
+                    sup_bool = true;
+                    break;
+                }
+            }
+
+            f = i + 1;
+            //Revisar elementos a la derecha y abajo del elemento de la diagonal
+            while (f <= matrix_size-1 && !sup_bool)
+            {
+                //Revisar si el siguiente elemento es igual a la opcion encontrada en la diagonal
+                if (matrix[*pc][*pf] == option)
+                {
+                    //Aumentar el tamanho de la cadena encontrada
+                    count++;
+                    f++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            //Revisar si se encontro una cadena de 'X' o 'O' de tamanho matrix_size
+            (count == matrix_size) ? res = option : res = '0';
+            if (res != '0')
+            {
+                return res;
+            }
+            //Resetear variables
+            count = 1;
+            sup_bool = false;
+            //Intercambiar las direcciones de los punteros
+            pf = &c;
+            pc = &f;
+        }
+    }
+    //Si no se encuentra ninguna cadena de tamanho matrix_size
+    return res;
+}
+
+bool lleno(char** matrix, int matrix_size)
+{
+    //Variable que determina cuantos espacios en el tablero estan ocupados
+    int count = 0;
+
+    //Doble for para recorrer todos los elementos de la matriz
+    for (int i = 0; i < matrix_size; i++)
+    {
+        for (int j = 0; j < matrix_size; j++)
+        {
+            //Si el elemento es igual a 'X' o 'O' se incrementa count
+            if (matrix[i][j] == 'X' || matrix[i][j] == 'O')
+            count++;
+        }
+    }
+    //Si el numero de espacios ocupados (count) es igual a matrix_size*matrix_size, res es igual a true
+    bool res = (count == matrix_size*matrix_size);
+    return res;
+}
+
+int Escoger_pos()
+{
+    int res;
+    std::cout << "Ingrese posicion a cambiar: " << std::endl << ">";
+    std::cin >> res;
+    return res;
+}
+
+bool Verificar(char** matrix, int index, int matrix_size, char tag)
+{
+    //Definir el elemento de la matriz segun la posicion dada
+    int index_i = int(ceil(float(index)/matrix_size)) - 1;
+    int index_j = index - (index_i*matrix_size + 1);
+
+    //Si la posicion no esta en el rango de la matriz devuelve false
+    if (index < 1 || index > matrix_size*matrix_size)
+    {
+        //Si tag = p esntonces se imprime un mensaje especificando la razon de la invalidez de la posicion
+        if (tag == 'p')
+        {
+            std::cout << "Posicion fuera de rango.";
+        }
+        return false;
+    }
+    //Si la posicion solicitada ya esta ocupada
+    else if (matrix[index_i][index_j] == 'X' || matrix[index_i][index_j] == 'O')
+    {
+        //Si tag = p esntonces se imprime un mensaje especificando la razon de la invalidez de la posicion
+        if (tag == 'p')
+        {
+            std::cout << "Esa posicion ya esta ocupada.";
+        }
+        return false;
+    }
+    //Si la posicion es valida
+    else
+    {
+        return true;
+    }
+}
+
+void Colocar2(char** matriz, int matriz_size, int posicion, char opcion)
+{
+    
+    //Calcular la posicion [i][j] en la matriz m
+    int index_i = int(ceil(float(posicion)/matriz_size)) - 1;
+    int index_j = posicion - (index_i*matriz_size + 1);
+    //Cambiar el valor del elemento
+    matriz[index_i][index_j] = opcion;
+}
+
+int Maquina(int rango)
+{
+    //Inicializar la secuencia de numeros aleatorios con una seed aleatoria
+    srand((unsigned) time(0));
+    int numeroAleatorio;
+    //Generar numero aleatorio entre 1 y rango
+    numeroAleatorio = (rand() % rango) + 1;
+    //Devolver dicho numero
+    return numeroAleatorio;
+}
