@@ -1,0 +1,10 @@
+int Maquina(int rango)
+{
+    //Inicializar la secuencia de numeros aleatorios con una seed aleatoria
+    srand((unsigned) time(0));
+    int numeroAleatorio;
+    //Generar numero aleatorio entre 1 y rango
+    numeroAleatorio = (rand() % rango) + 1;
+    //Devolver dicho numero
+    return numeroAleatorio;
+}
